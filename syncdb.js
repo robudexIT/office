@@ -77,7 +77,7 @@ InboundCdr.sync()
 
 const findAllCdr = async () => {
     try {
-        const cdr = await InboundCdr.findall()
+        const cdr = await InboundCdr.findAll()
     }catch(error){
         console.log(error)
     }
