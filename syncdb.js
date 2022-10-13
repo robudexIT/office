@@ -29,22 +29,19 @@ connectDB = async() => {
 connectDB()
 
 const InboundCdr = db.define('InboundCdr', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
-    },
     date: {
         type: DataTypes.STRING,
         allowNull: false
     },
     startTimeStamp: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        primaryKey: true
     },
     endTimeStamp: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        primaryKey: true
     },
     callStatus: {
         type:DataTypes.STRING,
