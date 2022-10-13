@@ -74,8 +74,8 @@ InboundCdr.sync()
 
 const findAllCdr = async () => {
     try {
-        const cdr = await InboundCdr.findAll()
-        return cdr
+        return InboundCdr.findAll()
+
     }catch(error){
         console.log(error)
     }
@@ -89,7 +89,7 @@ const countAllCdr = async () => {
             console.log('No Found Records')
         }else{
             const cdrs  = await findAllCdr()
-            
+            console.log(cdrs)
         }
     }catch(error){
         console.log(error)
