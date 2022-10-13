@@ -70,7 +70,7 @@ const InboundCdr = db.define('InboundCdr', {
     
 })
 
-InboundCdr.sync({force:true})
+InboundCdr.sync()
 
 const findAllCdr = async () => {
     try {
