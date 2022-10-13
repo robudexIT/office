@@ -35,31 +35,40 @@ const InboundCdr = db.define('InboundCdr', {
         primaryKey: true
     },
     date: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
     },
     startTimeStamp: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
     },
     endTimeStamp: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
     },
     callStatus: {
-        type:DataTypes.STRING
+        type:DataTypes.STRING,
+        allowNull: false
     },
     caller: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
     },
     calledNumber: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
     },
     whoAnsweredCall: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
     }, 
     filename: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
     },
     duration: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
     }
     
 })
@@ -74,5 +83,18 @@ const findAllCdr = async () => {
     }
 }
 
+const countAllCdr = async () => {
+    try {
+        totalcdrs = await InboundCdr.findAndCountAll()
+        if(totalcdrs ==0){
+            console.log('No Found Records')
+        }else{
+            const cdrs  = await findAllCdr()
+        }
+    }catch(error){
+        console.log(error)
+    }
+}
 
+countAllCdr()
 
