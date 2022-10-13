@@ -89,7 +89,9 @@ const countAllCdr = async () => {
             console.log('No Found Records')
         }else{
             const cdrs  = await findAllCdr()
-            console.log(cdrs)
+            for(let cdr of cdrs){
+                console.log(cdr)
+            }
         }
     }catch(error){
         console.log(error)
