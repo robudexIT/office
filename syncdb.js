@@ -139,6 +139,9 @@ const countAllCdr = async () => {
     try {
         let {count, row} = await InboundCdr.findAndCountAll()
         let countph = await countPhDBCdr()
+        let [rows,fields] = await countPhDBCdr()
+        console.log(rows)
+        console.log(fields)
         count = parseInt(count)
         countph = parseInt(countph)
         console.log(countph)
