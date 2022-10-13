@@ -8,7 +8,7 @@ const { DataTypes } = require('sequelize')
 const mysqlserver_host = process.env.MYSQLSERVERHOST
 const mysqlserver_user = process.env.MYSQLSERVERUSER
 const mysqlserver_pwd = process.env.MYSQLSERVERPWD
-const mysqlserver_db = process.env.MYSQLSERVER_DB
+const mysqlserver_db = process.env.MYSQLSERVERDB
 
 const db = new sequelize(mysqlserver_db,mysqlserver_user,mysqlserver_pwd, {
     host: mysqlserver_host,
