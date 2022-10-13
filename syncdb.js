@@ -14,9 +14,9 @@ if(choosedate == 'Undefined' ||  !Date.parse(choosedate)){
     console.log("Must input valid date (yyyy-mm-dd') format")
     process.exit(0)
 }
-if(option == 'Undefined' || option == '' || option !== 'check' || option !== 'startsync'){
-    console.log('No option provided..')
-    console.log('select between check|startsync')
+if(option == 'Undefined' || option == '' ){
+    console.log('Please provide second argument..')
+    console.log('second argument must be check|startsync')
     process.exit(0)
 }
 // MYSQLSERVERHOST=localhost
@@ -153,6 +153,9 @@ if(option == 'check'){
     countAllCdr()
 }else if (option == 'startsync'){
     syncDb() 
+}else{
+    console.log('Second arguments is invalid...')
+    proccess.exit(0)
 }
 
 
