@@ -12,7 +12,7 @@ const mysqlserver_db = process.env.MYSQLSERVERDB
 
 const db = new sequelize(mysqlserver_db,mysqlserver_user,mysqlserver_pwd, {
     host: mysqlserver_host,
-    dialect: 'mysql2'
+    dialect: 'mysql'
 })
 
 
