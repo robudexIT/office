@@ -90,7 +90,7 @@ const countAllCdr = async () => {
         }else{
             const cdrs  = await findAllCdr()
             for(let cdr of cdrs){
-                console.log(cdr)
+                console.log(cdr.date)
             }
         }
     }catch(error){
