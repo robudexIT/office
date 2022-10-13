@@ -8,6 +8,7 @@ const args = process.argv.slice(2);
 const choosedate = args[0];
 const option  = args[1]
 
+console.log(option)
 if(choosedate == 'Undefined' ||  !Date.parse(choosedate)){
     console.log('Date Arguments is need')
     console.log("Must input valid date (yyyy-mm-dd') format")
