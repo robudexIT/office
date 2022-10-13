@@ -174,7 +174,7 @@ if(option == 'check'){
     syncDb() 
 }else{
     console.log('Second arguments is invalid...')
-    proccess.exit(0)
+    process.exit(0)
 }
 
 
