@@ -41,8 +41,13 @@ const db = new sequelize(mysqlserver_db,mysqlserver_user,mysqlserver_pwd, {
 })
 
 const countPhDBCdr = async () => {
-    const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'test'});
-     return connection.execute(`SELECT Count(*) FROM WHERE getDate= ?, [${choosedate}]` );
+    try{
+        const connection = await mysql.createConnection({host: mysqlserverph_host, user: mysqlserverph_user, password:mysqlserverph_pwd, database: mysqlserverph_db});
+        return connection.execute(`SELECT Count(*) FROM WHERE getDate= ?, [${choosedate}]` );
+    }catch(error){
+        console.log(error)
+    }
+    
 }
 
 const connectBackupDB = async() => {
