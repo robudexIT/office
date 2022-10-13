@@ -119,17 +119,17 @@ const syncDb = async () => {
         let {count, row} = await InboundCdr.findAndCountAll({where:{date:choosedate}})
         let [rows,fields] = await countPhDBCdr()
         let countph = rows[0]['Count(*)']
-        count = parseInt(count)
+        let countbuffer = parseInt(count)
         countph = parseInt(countph)
         if(countph > count){
             console.log('Uploading backup cdr to the Main DB...')
-            return
+            process.exit(0)
         }else if(count > countph){
             console.log('Uploading backupd cdr to Ph Db...')
-            return
+            process.exit(0)
         }else{
             console.log('Two Database are sync in records..No need to run sync')
-            return
+            process.exit(0)
         }
     }catch(error){
         console.log(error)
@@ -142,22 +142,25 @@ const countAllCdr = async () => {
         let [rows,fields] = await countPhDBCdr()
         let countph = rows[0]['Count(*)']
         
-        count = parseInt(count)
+        let countbuffer = parseInt(count)
         countph = parseInt(countph)
         console.log(countph)
         console.log(count)
-        if(countph > count){
-            console.log(`The Main DB have missing of ${countph}-${count} please start sync now`)
-            return
-        }else if(count > countph){
-            console.log(`The Ph DB have missing of ${count}-${countph} please start sync now`)
+        let missing 
+        if(countph > countbuffer){
+            missing = countph - countbuffer
+            console.log(`The Main DB have missing of ${missing} please start sync now`)
+            process.exit(0)
+        }else if(countbuffer > countph){
+            missing =  countbuffer -  countph
+            console.log(`The Ph DB have missing of ${missing} please start sync now`)
             // for(let cdr of cdrs){
             //     console.log(cdr.date)
             // }
-            return
+            process.exit(0)
         }else{
             console.log('Two Database are sync in records..No need to run sync')
-            return
+            process.exit(0)
         }
     }catch(error){
         console.log(error)
