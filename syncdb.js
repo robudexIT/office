@@ -32,7 +32,7 @@ const InboundCdr = db.define('InboundCdr', {
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
-        primarykey: true
+        primaryKey: true
     },
     date: {
         type: DataTypes.STRING
