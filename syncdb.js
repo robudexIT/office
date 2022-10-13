@@ -86,6 +86,7 @@ const findAllCdr = async () => {
 const countAllCdr = async () => {
     try {
         const totalcdrs = await InboundCdr.findAndCountAll()
+        console.log(totalcdrs)
         if(totalcdrs ==0){
             console.log('No Found Records')
         }else{
