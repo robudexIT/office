@@ -122,10 +122,13 @@ const syncDb = async () => {
         countph = parseInt(countph)
         if(countph > count){
             console.log('Uploading backup cdr to the Main DB...')
+            return
         }else if(count > countph){
             console.log('Uploading backupd cdr to Ph Db...')
+            return
         }else{
             console.log('Two Database are sync in records..No need to run sync')
+            return
         }
     }catch(error){
         console.log(error)
@@ -138,15 +141,20 @@ const countAllCdr = async () => {
         let countph = await countPhDBCdr()
         count = parseInt(count)
         countph = parseInt(countph)
+        console.log(countph)
+        console.log(count)
         if(countph > count){
             console.log(`The Main DB have missing of ${countph}-${count} please start sync now`)
+            return
         }else if(count > countph){
             console.log(`The Ph DB have missing of ${count}-${countph} please start sync now`)
             // for(let cdr of cdrs){
             //     console.log(cdr.date)
             // }
+            return
         }else{
             console.log('Two Database are sync in records..No need to run sync')
+            return
         }
     }catch(error){
         console.log(error)
