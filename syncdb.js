@@ -5,6 +5,7 @@ const { Op } = require('sequelize')
 const mysql = require('mysql2/promise');
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
+const sqlserver = require('mssql')
 
 //THIS SCRIPT EXPECT ARGUMENTS
 const args = process.argv.slice(2);
@@ -38,6 +39,13 @@ const mysqlserverph_db = process.env.MYSQLSERVERPHDB
 
 
 
+const sqlserver_host = process.env.SQLSERVERServer
+const sqlserver_user = process.env.SQLSERVERUser 
+const sqlserver_pass = process.env.SQLSERVERPass
+const sqlserver_db  = process.env.SQLSERVERDB 
+
+
+
 const db = new sequelize(mysqlserver_db,mysqlserver_user,mysqlserver_pwd, {
     host: mysqlserver_host,
     dialect: 'mysql'
@@ -51,6 +59,18 @@ const phdb = async (query) => {
         console.log(error)
     }
     
+}
+const maindb = async () => {
+    console.log('This is the main db')
+    try{
+        const sql = await sqlserver.connect(`Server=${sqlserver_host},1433;Database=${sqlserver_db};User Id=${sqlserver_user};Password=${sqlserver_pass};`)
+        if(sql){
+            console.log('Successfully Connected to MainDB...')
+            return
+        }
+    }catch(error){
+        console.log(error)
+    }
 }
 
 const connectBackupDB = async() => {
@@ -125,13 +145,14 @@ const syncDb = async () => {
         let query = `SELECT * FROM  inbound_callstatus WHERE getDate=?`
         
         phcdrs = await phdb(query)
-        let countph = phcdrs.length
+        let countph = phcdrs[0].length
 
         countph = parseInt(countph)
         countbackup = parseInt(countbackup)
-        
+
         console.log(countph)
         console.log(countbackup)
+        let missingcdrs = []
         if(countph > countbackup){
             console.log('Uploading backup cdr to the Main DB...')
             
@@ -162,11 +183,11 @@ const countAllCdr = async () => {
         let missing 
         if(countph > countbuffer){
             missing = countph - countbuffer
-            console.log(`The Main DB have missing of ${missing} please start sync now`)
+            console.log(`The Main DB have missing of ${missing} cdr records please start sync now`)
             process.exit(0)
         }else if(countbuffer > countph){
             missing =  countbuffer -  countph
-            console.log(`The Ph DB have missing of ${missing} please start sync now`)
+            console.log(`The Ph DB have missing of ${missing} cdr records please start sync now`)
             // for(let cdr of cdrs){
             //     console.log(cdr.date)
             // }
@@ -180,7 +201,7 @@ const countAllCdr = async () => {
     }
 }
 
-
+maindb()
 if(option == 'check'){
     countAllCdr()
 }else if (option == 'startsync'){

@@ -18,6 +18,7 @@
   "homepage": "https://github.com/robudexIT/office#readme",
   "dependencies": {
     "dotenv": "^16.0.3",
+    "mssql": "^9.0.1",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "sequelize": "^6.25.0"
