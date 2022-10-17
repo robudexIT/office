@@ -117,8 +117,8 @@ const findAllCdr = async () => {
 
 const syncDb = async () => {
     try {
-        // let {count, row} = await InboundCdr.findAndCountAll({where:{date:{[Op.eq]:choosedate}}})
-        let {count, row} = await InboundCdr.findAndCountAll()
+        let {count, row} = await InboundCdr.findAndCountAll({where:{date:choosedate}})
+        // let {count, row} = await InboundCdr.findAndCountAll()
         let [rows,fields] = await countPhDBCdr()
         let countph = rows[0]['Count(*)']
         let countbuffer = parseInt(count)
@@ -140,7 +140,7 @@ const syncDb = async () => {
 
 const countAllCdr = async () => {
     try {
-        let {count, row} = await InboundCdr.findAndCountAll()
+        let {count, row} = await InboundCdr.findAndCountAll({where:{date:choosedate}})
         let [rows,fields] = await countPhDBCdr()
         let countph = rows[0]['Count(*)']
         
