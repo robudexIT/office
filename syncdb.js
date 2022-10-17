@@ -140,19 +140,30 @@ const findAllCdr = async () => {
 
 const syncDb = async () => {
     try {
+        let query
+        //query backupcdrs;
         let backupcdrs = await InboundCdr.findAll({where:{date:choosedate}})
         let countbackup = backupcdrs.length
-
-        let query = `SELECT * FROM  inbound_callstatus WHERE getDate=?`
         
+        //query phdb cdrs;
+        query = `SELECT * FROM  inbound_callstatus WHERE getDate=?`
         phcdrs = await phdb(query)
         let countph = phcdrs[0].length
 
+        //query maindb cdrs;
+        let choose_date = choosedate.replaceAll("-","")
+        query = `SELECT * FROM tblSBTCallDetails_Incoming WHERE CdtStartDate=${choose_date} AND CdtCalledParty='0452909485'`
+        let maindbtcdrs  = await maindb(query)
+        maindbtcdrs = maindbtcdrs.recordset
+        let maindbcountcdr = maindbtcdrs.length
+
         countph = parseInt(countph)
         countbackup = parseInt(countbackup)
+        maindbcountcdr = parseInt(maindbcountcdr)
 
         console.log(countph)
         console.log(countbackup)
+        console.log(maindbcountcdr)
         let missingcdrs = []
         if(countph > countbackup){
             console.log('Uploading backup cdr to the Main DB...')
