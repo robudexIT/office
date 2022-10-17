@@ -66,8 +66,8 @@ const maindb = async () => {
         const sql = await sqlserver.connect(`Server=${sqlserver_host},1433;Database=${sqlserver_db};User Id=${sqlserver_user};Password=${sqlserver_pass};Encrypt=false`)
         if(sql){
             console.log('Successfully Connected to MainDB...')
-            const maindbcdrcount = await sql.query("SELECT Count(*) FROM tblSBTCallDetails_Incoming WHERE CdtStartDate='20221017'")
-            console.log(maindbcdrcount.recordsets[0])
+            const maindbcdrcount = await sql.query("SELECT * FROM tblSBTCallDetails_Incoming WHERE CdtStartDate='20221017'")
+            console.log(maindbcdrcount)
         }
     }catch(error){
         console.log(error)
