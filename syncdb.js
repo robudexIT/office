@@ -186,7 +186,7 @@ const countAllCdr = async () => {
         //query maindb(2x-db)
          query = `SELECT Count(*) FROM tblSBTCallDetails_Incoming WHERE CdtStartDate=${choosedate} AND CdtCalledParty='0452909485'`
          let maindbcountcdr  = await maindb(query)
-         maindbcountcdr = maindbcountcdr.recordset[0]
+         maindbcountcdr = maindbcountcdr.recordset
          maindbcountcdr = parseInt(maindbcountcdr)
 
         console.log('backup ' + countbackupcdr)
@@ -220,6 +220,7 @@ const countAllCdr = async () => {
             process.exit(0)
         }
         console.log('Backup DB has been compromise....backup should always have the complete cdr records....')
+        process.exit(0)
     }catch(error){
         console.log(error)
     }
