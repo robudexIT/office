@@ -63,10 +63,11 @@ const phdb = async (query) => {
 const maindb = async () => {
     console.log('This is the main db')
     try{
-        const sql = await sqlserver.connect(`Server=${sqlserver_host},1433;Database=${sqlserver_db};User Id=${sqlserver_user};Password=${sqlserver_pass};`)
+        const sql = await sqlserver.connect(`Server=${sqlserver_host},1433;Database=${sqlserver_db};User Id=${sqlserver_user};Password=${sqlserver_pass};Encrypt=false`)
         if(sql){
             console.log('Successfully Connected to MainDB...')
-            return
+            const maindbcdrcount = await sql.query("SELECT Count(*) FROM tblSBTCallDetails_Incoming WHERE CdtStartDate='20221017'")
+            console.log(maindbcdrcount)
         }
     }catch(error){
         console.log(error)
