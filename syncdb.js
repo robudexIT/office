@@ -67,7 +67,7 @@ const maindb = async () => {
         if(sql){
             console.log('Successfully Connected to MainDB...')
             const maindbcdrcount = await sql.query("SELECT Count(*) FROM tblSBTCallDetails_Incoming WHERE CdtStartDate='20221017'")
-            console.log(maindbcdrcount)
+            console.log(maindbcdrcount.recordsets[0])
         }
     }catch(error){
         console.log(error)
