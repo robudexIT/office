@@ -3,6 +3,8 @@ const sequelize = require('sequelize')
 const { DataTypes } = require('sequelize')
 const { Op } = require('sequelize')
 const mysql = require('mysql2/promise');
+const util = require('util')
+const exec = util.promisify(require('child_process').exec)
 
 //THIS SCRIPT EXPECT ARGUMENTS
 const args = process.argv.slice(2);
@@ -41,10 +43,10 @@ const db = new sequelize(mysqlserver_db,mysqlserver_user,mysqlserver_pwd, {
     dialect: 'mysql'
 })
 
-const countPhDBCdr = async () => {
+const phdb = async (query) => {
     try{
         const connection = await mysql.createConnection({host: mysqlserverph_host, user: mysqlserverph_user, password:mysqlserverph_pwd, database: mysqlserverph_db});
-        return connection.execute(`SELECT Count(*) FROM  inbound_callstatus WHERE getDate=?`,[choosedate] );
+        return connection.execute(query,[choosedate] );
     }catch(error){
         console.log(error)
     }
@@ -117,16 +119,24 @@ const findAllCdr = async () => {
 
 const syncDb = async () => {
     try {
-        let {count, row} = await InboundCdr.findAndCountAll({where:{date:choosedate}})
-        // let {count, row} = await InboundCdr.findAndCountAll()
-        let [rows,fields] = await countPhDBCdr()
-        let countph = rows[0]['Count(*)']
-        let countbuffer = parseInt(count)
+        let backupcdrs = await InboundCdr.findAll({where:{date:choosedate}})
+        let countbackup = backupcdrs.length
+
+        let query = `SELECT * FROM  inbound_callstatus WHERE getDate=?`
+        
+        phcdrs = await phdb(query)
+        let countph = phcdrs.length
+
         countph = parseInt(countph)
-        if(countph > count){
+        countbackup = parseInt(countbackup)
+        
+        console.log(countph)
+        console.log(countbackup)
+        if(countph > countbackup){
             console.log('Uploading backup cdr to the Main DB...')
+            
             process.exit(0)
-        }else if(count > countph){
+        }else if(countbackup > countph){
             console.log('Uploading backupd cdr to Ph Db...')
             process.exit(0)
         }else{
@@ -141,7 +151,8 @@ const syncDb = async () => {
 const countAllCdr = async () => {
     try {
         let {count, row} = await InboundCdr.findAndCountAll({where:{date:choosedate}})
-        let [rows,fields] = await countPhDBCdr()
+        let query = `SELECT Count(*) FROM  inbound_callstatus WHERE getDate=?`
+        let [rows,fields] = await phdb(query)
         let countph = rows[0]['Count(*)']
         
         let countbuffer = parseInt(count)
