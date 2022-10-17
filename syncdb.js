@@ -60,14 +60,14 @@ const phdb = async (query) => {
     }
     
 }
-const maindb = async () => {
+const maindb = async (query) => {
     console.log('This is the main db')
     try{
         const sql = await sqlserver.connect(`Server=${sqlserver_host},1433;Database=${sqlserver_db};User Id=${sqlserver_user};Password=${sqlserver_pass};Encrypt=false`)
         if(sql){
             console.log('Successfully Connected to MainDB...')
-            const maindbcdrcount = await sql.query("SELECT * FROM tblSBTCallDetails_Incoming WHERE CdtStartDate='20221017' AND CdtCalledParty='0452909485'")
-            console.log(maindbcdrcount)
+            return  sql.query(query)
+            
         }
     }catch(error){
         console.log(error)
@@ -172,31 +172,53 @@ const syncDb = async () => {
 
 const countAllCdr = async () => {
     try {
+        let query;
+        //query backupdb
         let {count, row} = await InboundCdr.findAndCountAll({where:{date:choosedate}})
-        let query = `SELECT Count(*) FROM  inbound_callstatus WHERE getDate=?`
+        let countbackupcdr = parseInt(count)
+
+        //query phdb
+        query = `SELECT Count(*) FROM  inbound_callstatus WHERE getDate=?`
         let [rows,fields] = await phdb(query)
-        let countph = rows[0]['Count(*)']
-        
-        let countbuffer = parseInt(count)
-        countph = parseInt(countph)
-        console.log(countph)
-        console.log(count)
-        let missing 
-        if(countph > countbuffer){
-            missing = countph - countbuffer
-            console.log(`The Main DB have missing of ${missing} cdr records please start sync now`)
-            process.exit(0)
-        }else if(countbuffer > countph){
-            missing =  countbuffer -  countph
-            console.log(`The Ph DB have missing of ${missing} cdr records please start sync now`)
-            // for(let cdr of cdrs){
-            //     console.log(cdr.date)
-            // }
-            process.exit(0)
-        }else{
-            console.log('Two Database are sync in records..No need to run sync')
+        let countphcdr = rows[0]['Count(*)']
+        countphcdr= parseInt(countphcdr)
+        let choose_date = choosedate.replaceAll("-","")
+        //query maindb(2x-db)
+         query = `SELECT Count(*) FROM tblSBTCallDetails_Incoming WHERE CdtStartDate=${choosedate} AND CdtCalledParty='0452909485'`
+         let maindbcountcdr  = await maindb(query).recordset[0]['']
+         maindbcountcdr = parseInt(maindbcountcdr)
+
+        console.log('backup ' + countbackupcdr)
+        console.log('phdb ' + countphcdr)
+        console.log('maindb ' +maindbcountcdr)
+        let missing
+        if(countbackupcdr == countphcdr && countbackupcdr == maindbcountcdr){
+            console.log('MainDB and PhDB are in sync...')
+            return
             process.exit(0)
         }
+        if(countbackupcdr > countphcdr && countbackupcdr > maindbcountcdr){
+            let mainmissing  = countbackupcdr - maindbcountcdr;
+            let phmissing = countbackupcdr - countphcdr
+            console.log(`The Main DB have missing of ${mainmissing} cdr records please start syncdb now` )
+            console.log(`The PH DB have missing of ${phmissing} cdr records please start syncdb now` )
+            return
+            process.exit(0)
+        }
+         
+        if(countbackupcdr > maindbcountcdr){
+            missing =  countbackupcdr - maindbcountcdr
+            console.log(`The Main DB have missing of ${missing} cdr records please start sync now`)
+            return
+            process.exit(0)
+        }
+         if(countbackupcdr > countphcdr){
+            missing =  countbackupcdr -  countphcdr
+            console.log(`The Ph DB have missing of ${missing} cdr records please start sync now`)
+            return
+            process.exit(0)
+        }
+        console.log('Backup DB has been compromise....backup should always have the complete cdr records....')
     }catch(error){
         console.log(error)
     }
