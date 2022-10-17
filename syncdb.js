@@ -1,6 +1,7 @@
 require('dotenv').config()
 const sequelize = require('sequelize')
 const { DataTypes } = require('sequelize')
+const { Op } = require('sequelize')
 const mysql = require('mysql2/promise');
 
 //THIS SCRIPT EXPECT ARGUMENTS
@@ -116,7 +117,7 @@ const findAllCdr = async () => {
 
 const syncDb = async () => {
     try {
-        let {count, row} = await InboundCdr.findAndCountAll({where:{date:choosedate}})
+        let {count, row} = await InboundCdr.findAndCountAll({where:{date:{[Op.eq]:choosedate}}})
         let [rows,fields] = await countPhDBCdr()
         let countph = rows[0]['Count(*)']
         let countbuffer = parseInt(count)
