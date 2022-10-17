@@ -196,7 +196,6 @@ const countAllCdr = async () => {
         let missing
         if(countbackupcdr == countphcdr && countbackupcdr == maindbcountcdr){
             console.log('MainDB and PhDB are in sync...')
-            return
             process.exit(0)
         }
         if(countbackupcdr > countphcdr && countbackupcdr > maindbcountcdr){
@@ -204,20 +203,17 @@ const countAllCdr = async () => {
             let phmissing = countbackupcdr - countphcdr
             console.log(`The Main DB have missing of ${mainmissing} cdr records please start syncdb now` )
             console.log(`The PH DB have missing of ${phmissing} cdr records please start syncdb now` )
-            return
             process.exit(0)
         }
          
         if(countbackupcdr > maindbcountcdr){
             missing =  countbackupcdr - maindbcountcdr
             console.log(`The Main DB have missing of ${missing} cdr records please start sync now`)
-            return
             process.exit(0)
         }
          if(countbackupcdr > countphcdr){
             missing =  countbackupcdr -  countphcdr
             console.log(`The Ph DB have missing of ${missing} cdr records please start sync now`)
-            return
             process.exit(0)
         }
         console.log('Backup DB has been compromise....backup should always have the complete cdr records....')
