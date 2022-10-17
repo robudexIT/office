@@ -155,27 +155,38 @@ const syncDb = async () => {
         query = `SELECT * FROM tblSBTCallDetails_Incoming WHERE CdtStartDate=${choose_date} AND CdtCalledParty='0452909485'`
         let maindbtcdrs  = await maindb(query)
         maindbtcdrs = maindbtcdrs.recordset
-        let maindbcountcdr = maindbtcdrs.length
+        let maindbcount = maindbtcdrs.length
 
         countph = parseInt(countph)
         countbackup = parseInt(countbackup)
-        maindbcountcdr = parseInt(maindbcountcdr)
+        maindbcount = parseInt(maindbcount)
 
         console.log(countph)
         console.log(countbackup)
-        console.log(maindbcountcdr)
+        console.log(maindbcount)
         let missingcdrs = []
-        if(countph > countbackup){
-            console.log('Uploading backup cdr to the Main DB...')
-            
-            process.exit(0)
-        }else if(countbackup > countph){
-            console.log('Uploading backupd cdr to Ph Db...')
-            process.exit(0)
-        }else{
+
+        if(countbackup == countph && countbackup == maindbcount){
             console.log('Two Database are sync in records..No need to run sync')
             process.exit(0)
         }
+
+        if(countbackup > countph && countbackup > maindbcount){
+            console.log('Uploading backup cdr to MainDB and PhDB')
+            process.exit(0)
+        }
+        
+        if(countbackup > maindbcount){
+            console.log('Uploading backup cdr to the MainDB...')
+            process.exit(0)
+        }
+         if(countbackup > countph){
+            console.log('Uploading backupd cdr to PhDB...')
+            process.exit(0)
+        }
+
+        console.log('Backup DB has been compromise....backup should always have the complete cdr records....')
+        process.exit(0)
     }catch(error){
         console.log(error)
     }
