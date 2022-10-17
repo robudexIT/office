@@ -224,7 +224,7 @@ const countAllCdr = async () => {
     }
 }
 
-maindb()
+
 if(option == 'check'){
     countAllCdr()
 }else if (option == 'startsync'){
