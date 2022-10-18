@@ -205,7 +205,7 @@ const syncDb = async () => {
                 console.log('no cdrs on phdb uploading backup to phdb')
                 // exten => h,n,System(/usr/bin/php /root/SCRIPTS/inbound_callstatus.php ${CALL_TIME} ${END_TIME} ${DIALSTATUS} ${CALLER} ${CALLED_NO} ${DIALEDPEERNUMBER})
                 for (let bcdr of backupcdrs){
-                    const { stdout, stderr } = await exec(`/usr/bin/php /root/SCRIPTS/inbound_callstatus2.php ${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${bcdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.filename} ${bcdr.duration}`)
+                    const { stdout, stderr } = await exec(`/usr/bin/php /root/SCRIPTS/phpdb_inbound.php ${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${bcdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.date}`)
                     console.log(` uploading ${bcdr.startTimeStamp} cdr completed..`)
                     console.log('stdout:', stdout)
                     console.log('stderr:', stderr)
