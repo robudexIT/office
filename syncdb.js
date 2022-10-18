@@ -36,9 +36,6 @@ const mysqlserverph_host = process.env.MYSQLSERVERPHHOST
 const mysqlserverph_user = process.env.MYSQLSERVERPHUSER
 const mysqlserverph_pwd = process.env.MYSQLSERVERPHPWD
 const mysqlserverph_db = process.env.MYSQLSERVERPHDB
-
-
-
 const sqlserver_host = process.env.SQLSERVERServer
 const sqlserver_user = process.env.SQLSERVERUser 
 const sqlserver_pass = process.env.SQLSERVERPass
@@ -161,6 +158,7 @@ const syncDb = async () => {
         countbackup = parseInt(countbackup)
         maindbcount = parseInt(maindbcount)
 
+        console.log(maindbtcdrs)
         console.log(countph)
         console.log(countbackup)
         console.log(maindbcount)
