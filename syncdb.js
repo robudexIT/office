@@ -202,7 +202,15 @@ const syncDb = async () => {
             console.log('Uploading backupd cdr to PhDB...')
             //when there is no found cdr's upload all backups to phdb
             if(countph == 0){
-                console.log('uploading backup to phdb')
+                console.log('no cdrs on phdb uploading backup to phdb')
+                // exten => h,n,System(/usr/bin/php /root/SCRIPTS/inbound_callstatus.php ${CALL_TIME} ${END_TIME} ${DIALSTATUS} ${CALLER} ${CALLED_NO} ${DIALEDPEERNUMBER})
+                for (let bcdr of backupcdrs){
+                    const { stdout, stderr } = await exec(`/usr/bin/php /root/SCRIPTS/inbound_callstatus2.php ${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${bcdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.filename} ${bcdr.duration}`)
+                    console.log(` uploading ${bcdr.startTimeStamp} cdr completed..`)
+                    console.log('stdout:', stdout)
+                    console.log('stderr:', stderr)
+                }
+                
             }else{
                 const startTimeStamp = phcdrs.map(cdr => cdr.StartTimeStamp)
                 missingcdrs =  backupcdrs.filter(bcdr => {
