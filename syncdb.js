@@ -195,6 +195,7 @@ const syncDb = async () => {
                     }
                     return false
                 })
+                console.log("Here's the missing cdrs that need to upload")
                 console.log(missingcdrs)
             }
             process.exit(0)
