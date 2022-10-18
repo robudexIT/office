@@ -178,10 +178,44 @@ const syncDb = async () => {
         
         if(countbackup > maindbcount){
             console.log('Uploading backup cdr to the MainDB...')
+            if(maindbcount == 0){
+                console.log('Uploading all backup records cdr to maindb')
+                // code here....
+            }else{
+                const startTimeStamp = maindbtcdrs.map(cdr => {
+                    let date = cdr.CdtStartDate
+                    let time = cdr.CdtStartTime.replaceAll(":", "")
+                    let timestamp = `${date}-${time}`
+                    return timestamp
+                })
+                missingcdrs = backupcdrs.filter(bcdr => {
+                    const isOntables = startTimeStamp.includes(bcdr.startTimeStamp)
+                    if(!isOntables){
+                        return true
+                    }
+                    return false
+                })
+                console.log(missingcdrs)
+            }
             process.exit(0)
         }
          if(countbackup > countph){
             console.log('Uploading backupd cdr to PhDB...')
+            //when there is no found cdr's upload all backups to phdb
+            if(countph == 0){
+                console.log('uploading backup to phdb')
+            }else{
+                const startTimeStamp = phcdrs.map(cdr => cdr.StartTimeStamp)
+                missingcdrs =  backupcdrs.filter(bcdr => {
+                    const isOntables = startTimeStamp.includes(bcdr.startTimeStamp)
+                    if(!isOntables){
+                        return true
+                    }
+                    return false
+                })
+                console.log(missingcdrs)
+            }
+            
             process.exit(0)
         }
 
@@ -189,6 +223,9 @@ const syncDb = async () => {
         process.exit(0)
     }catch(error){
         console.log(error)
+    }
+    function filtercdr(cdr){
+        console.log('begin filtering here....')
     }
 }
 
