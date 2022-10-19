@@ -253,7 +253,13 @@ const syncDb = async () => {
                 return true
             })
             for(let cdr of missingcdrs){
-                const { stdout, stderr } = await exec(`${command} ${cdr.startTimeStamp} ${cdr.endTimeStamp} ${cdr.callStatus} ${cdr.caller} ${cdr.calledNumber} ${cdr.whoAnsweredCall} ${cdr.date}`)
+                let params = ''
+                if(db == 'phdb'){
+                    params = `${cdr.startTimeStamp} ${cdr.endTimeStamp} ${cdr.callStatus} ${cdr.caller} ${cdr.calledNumber} ${cdr.whoAnsweredCall} ${cdr.date}`
+                }else {
+                    params = `${cdr.startTimeStamp} ${cdr.endTimeStamp} ${cdr.callStatus} ${cdr.caller} ${cdr.calledNumber} ${cdr.whoAnsweredCall} ${cdr.filename} ${cdr.duration}`
+                }
+                const { stdout, stderr } = await exec(`${command} ${params}` )
                 // console.log(` uploading ${bcdr.startTimeStamp} cdr completed..`)
                 console.log( stdout)
                 console.log( stderr)
