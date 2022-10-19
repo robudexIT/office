@@ -206,9 +206,9 @@ const syncDb = async () => {
                 // exten => h,n,System(/usr/bin/php /root/SCRIPTS/inbound_callstatus.php ${CALL_TIME} ${END_TIME} ${DIALSTATUS} ${CALLER} ${CALLED_NO} ${DIALEDPEERNUMBER})
                 for (let bcdr of backupcdrs){
                     const { stdout, stderr } = await exec(`/usr/bin/php /root/SCRIPTS/phpdb_inbound.php ${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${bcdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.date}`)
-                    console.log(` uploading ${bcdr.startTimeStamp} cdr completed..`)
-                    console.log('stdout:', stdout)
-                    console.log('stderr:', stderr)
+                    // console.log(` uploading ${bcdr.startTimeStamp} cdr completed..`)
+                    //console.log( stdout)
+                    // console.log('stderr:', stderr)
                 }
                 
             }else{
@@ -300,3 +300,14 @@ if(option == 'check'){
 }
 
 
+
+
+// exten => h,n,System(/root/inbound-sqlserver.php ${CALL_TIME} ${END_TIME} ${DIALSTATUS} ${CALLER} ${CALLED_NO} ${DIALEDPEERNUMBER} ${RECORDING_
+//     FILENAME} ${ANSWEREDTIME})
+//     exten => h,n,System(/root/SCRIPTS/inbound-mysqlserver.php ${CALL_TIME} ${END_TIME} ${DIALSTATUS} ${CALLER} ${CALLED_NO} ${DIALEDPEERNUMBER} ${
+//     RECORDING_FILENAME} ${ANSWEREDTIME})
+//     exten => h,n,System(/usr/bin/php /root/SCRIPTS/inbound_callstatus.php ${CALL_TIME} ${END_TIME} ${DIALSTATUS} ${CALLER} ${CALLED_NO} ${DIALEDPE
+//     ERNUMBER})
+//     exten => h,n,System(/usr/bin/php /root/SCRIPTS/inbound_callstatus2.php ${CALL_TIME} ${END_TIME} ${DIALSTATUS} ${CALLER} ${CALLED_NO} ${DIALEDP
+//     EERNUMBER})
+//     ;exten => h,n,System(/usr/bin/php /root/SCRIPTS/delete_waiting.php ${CALLERID(num)})
