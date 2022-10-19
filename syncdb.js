@@ -163,7 +163,6 @@ const syncDb = async () => {
         let maindbtcdrs  = await maindb(query)
         maindbtcdrs = maindbtcdrs.recordset
         let maindbcount = maindbtcdrs.length
-        console.log(maindbtcdrs)
         let maindbtcdrs2 = await maindb2(query)
         maindbcount2 = maindbtcdrs2[0].length
 
