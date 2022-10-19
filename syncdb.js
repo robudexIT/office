@@ -289,7 +289,7 @@ const countAllCdr = async () => {
         countphcdr= parseInt(countphcdr)
         let choose_date = choosedate.replaceAll("-","")
         //query maindb(2x-db)
-         query = `SELECT Count(*) FROM tblSBTCallDetails_Incoming WHERE CdtStartDate=${choose_date} AND CdtCalledParty='0452909485'`
+         query = `SELECT Count(*) FROM tblSBTCallDetails_Incoming WHERE CdtStartDate=${choose_date}  AND CdtAcceptedParty LIKE %sbphilippines:sbtrading AND CdtCalledParty='0452909485' OR CdtCalledParty='0452909480' `
          let maindbcountcdr  = await maindb(query)
          maindbcountcdr = maindbcountcdr.recordset[0]['']
          console.log(maindbcountcdr)
