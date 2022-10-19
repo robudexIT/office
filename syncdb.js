@@ -159,6 +159,14 @@ const syncDb = async () => {
         maindbcount = parseInt(maindbcount)
 
         console.log(maindbtcdrs)
+        const startTimeStamp = maindbtcdrs.map(cdr => {
+            let date = cdr.CdtStartDate
+            let time = cdr.CdtStartTime.replaceAll(":", "")
+            let timestamp = `${date}-${time}`
+            return timestamp
+        })
+        console.log(startTimeStamp)
+        
         console.log(countph)
         console.log(countbackup)
         console.log(maindbcount)
@@ -172,8 +180,12 @@ const syncDb = async () => {
         if(countbackup > countph && countbackup > maindbcount){
            
             console.log('Uploading backup cdr to MainDB and PhDB')
-            await uploadtoDB(countph,backupcdrs,phcdrs )
+            const phcommand = '/usr/bin/php /root/SCRIPTS/phpdb_inbound.php'
+            const phmessage = 'Uploading backupd cdr to PhDB...'
+            await uploadtoDB(countph,phcdrs[0],backupcdrs,phcommand,phmess )
+            
 
+            await uploadtoDB(maindbcount,maindbtcdrs,backupcdrs,command,phmessage )
             process.exit(0)
 
         }
@@ -204,7 +216,8 @@ const syncDb = async () => {
         }
          if(countbackup > countph){
            const command = '/usr/bin/php /root/SCRIPTS/phpdb_inbound.php'
-           await uploadtoDB(countph,phcdrs[0],backupcdrs,command )
+           const message = 'Uploading backupd cdr to PhDB...'
+           await uploadtoDB(countph,phcdrs[0],backupcdrs,command,message )
             process.exit(0)
         }
 
@@ -213,8 +226,8 @@ const syncDb = async () => {
     }catch(error){
         console.log(error)
     }
-    async function uploadtoDB(cdrcount, cdrs, backupcdrs, command){
-        console.log('Uploading backupd cdr to PhDB...')
+    async function uploadtoDB(cdrcount, cdrs, backupcdrs, command, message){
+        console.log(`${message}`)
         //when there is no found cdr's upload all backups to phdb
         if(cdrcount == 0){
             console.log('no cdrs on phdb uploading backup to phdb')
