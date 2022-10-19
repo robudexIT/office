@@ -290,7 +290,7 @@ const countAllCdr = async () => {
 
          //query maindb2 
          query = `SELECT Count(*) FROM tblSBTCallDetails_Incoming WHERE CdtStartDate=? AND CdtCalledParty='0452909485'`
-          let  maindbcountcdr2  = await maindb2(query)
+          let  maindbcountcdr2  = await maindb2(query).rows[0]
         //   maindbcountcdr2 = parseInt(maindbcountcdr2.rows[0]['Count(*)'])
         console.log(maindbcountcdr2)
         console.log('backup ' + countbackupcdr)
