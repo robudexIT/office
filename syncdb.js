@@ -220,7 +220,12 @@ const syncDb = async () => {
                     }
                     return true
                 })
-                console.log(missingcdrs)
+                for(let cdr of missingcdrs){
+                    const { stdout, stderr } = await exec(`/usr/bin/php /root/SCRIPTS/phpdb_inbound.php ${cdr.startTimeStamp} ${cdr.endTimeStamp} ${cdr.callStatus} ${cdr.caller} ${cdr.calledNumber} ${cdr.whoAnsweredCall} ${cdr.date}`)
+                    // console.log(` uploading ${bcdr.startTimeStamp} cdr completed..`)
+                    console.log( stdout)
+                    console.log( stderr)
+                }
             }
             
             process.exit(0)
