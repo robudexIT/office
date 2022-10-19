@@ -293,7 +293,7 @@ const countAllCdr = async () => {
          let maindbcountcdr2  = await maindb2(query)
                      
         // maindbcountcdr2 =   parseInt(maindbcountcdr2[0]['Count(*)'])
-        console.log(maindbcountcdr2[0]['Count(*)'])
+        console.log(maindbcountcdr2[0])
         console.log('backup ' + countbackupcdr)
         console.log('phdb ' + countphcdr)
         console.log('maindb ' +maindbcountcdr)
