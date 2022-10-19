@@ -228,7 +228,7 @@ const syncDb = async () => {
             for (let bcdr of backupcdrs){
                 let params = ''
                 if(db == 'phdb'){
-                    params = `${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${cdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.date}`
+                    params = `${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${bcdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.date}`
                 }else{
                     params = `${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${bcdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.filename} ${bcdr.duration}`
                 }
