@@ -207,8 +207,8 @@ const syncDb = async () => {
                 for (let bcdr of backupcdrs){
                     const { stdout, stderr } = await exec(`/usr/bin/php /root/SCRIPTS/phpdb_inbound.php ${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${bcdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.date}`)
                     // console.log(` uploading ${bcdr.startTimeStamp} cdr completed..`)
-                    //console.log( stdout)
-                    // console.log('stderr:', stderr)
+                    console.log( stdout)
+                    console.log( stderr)
                 }
                 
             }else{
