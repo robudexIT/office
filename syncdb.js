@@ -204,7 +204,7 @@ const syncDb = async () => {
         }
          if(countbackup > countph){
            const command = '/usr/bin/php /root/SCRIPTS/phpdb_inbound.php'
-           await uploadtophDB(countph,phcdrs[0],backupcdrs,command )
+           await uploadtoDB(countph,phcdrs[0],backupcdrs,command )
             process.exit(0)
         }
 
