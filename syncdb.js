@@ -296,7 +296,7 @@ const countAllCdr = async () => {
          maindbcountcdr = parseInt(maindbcountcdr)
 
          //query maindb2 
-         query = `SELECT Count(*) FROM tblSBTCallDetails_Incoming WHERE CdtStartDate=? AND CdtCalledParty='0452909485'`
+         query = `SELECT Count(*) FROM tblSBTCallDetails_Incoming WHERE CdtStartDate=${choose_date} AND CdtCalledParty='0452909485'`
          let maindbcountcdr2  = await maindb2(query)
                      
          maindbcountcdr2 =   parseInt(maindbcountcdr2[0][0]['Count(*)'])
