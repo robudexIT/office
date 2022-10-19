@@ -170,8 +170,12 @@ const syncDb = async () => {
         }
 
         if(countbackup > countph && countbackup > maindbcount){
+           
             console.log('Uploading backup cdr to MainDB and PhDB')
+            await uploadtoDB(countph,backupcdrs,phcdrs )
+
             process.exit(0)
+
         }
         
         if(countbackup > maindbcount){
@@ -199,7 +203,8 @@ const syncDb = async () => {
             process.exit(0)
         }
          if(countbackup > countph){
-           await uploadtophDB(countph,backupcdrs,phcdrs )
+           const command = '/usr/bin/php /root/SCRIPTS/phpdb_inbound.php'
+           await uploadtophDB(countph,phcdrs[0],backupcdrs,command )
             process.exit(0)
         }
 
@@ -208,21 +213,21 @@ const syncDb = async () => {
     }catch(error){
         console.log(error)
     }
-    async function uploadtophDB(countph,backupcdrs,phcdrs){
+    async function uploadtoDB(cdrcount, cdrs, backupcdrs, command){
         console.log('Uploading backupd cdr to PhDB...')
         //when there is no found cdr's upload all backups to phdb
-        if(countph == 0){
+        if(cdrcount == 0){
             console.log('no cdrs on phdb uploading backup to phdb')
            
             for (let bcdr of backupcdrs){
-                const { stdout, stderr } = await exec(`/usr/bin/php /root/SCRIPTS/phpdb_inbound.php ${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${bcdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.date}`)
+                const { stdout, stderr } = await exec(`${command} ${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${bcdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.date}`)
                
                 console.log( stdout)
                 console.log( stderr)
             }
             
         }else{
-            const startTimeStamp = phcdrs[0].map(cdr => cdr.StartTimeStamp)
+            const startTimeStamp = cdrs.map(cdr => cdr.StartTimeStamp)
             missingcdrs =  backupcdrs.filter(bcdr => {
                 const isOntables = startTimeStamp.includes(bcdr.startTimeStamp)
                 if(isOntables){
@@ -231,7 +236,7 @@ const syncDb = async () => {
                 return true
             })
             for(let cdr of missingcdrs){
-                const { stdout, stderr } = await exec(`/usr/bin/php /root/SCRIPTS/phpdb_inbound.php ${cdr.startTimeStamp} ${cdr.endTimeStamp} ${cdr.callStatus} ${cdr.caller} ${cdr.calledNumber} ${cdr.whoAnsweredCall} ${cdr.date}`)
+                const { stdout, stderr } = await exec(`${command} ${cdr.startTimeStamp} ${cdr.endTimeStamp} ${cdr.callStatus} ${cdr.caller} ${cdr.calledNumber} ${cdr.whoAnsweredCall} ${cdr.date}`)
                 // console.log(` uploading ${bcdr.startTimeStamp} cdr completed..`)
                 console.log( stdout)
                 console.log( stderr)
