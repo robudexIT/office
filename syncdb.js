@@ -191,11 +191,11 @@ const syncDb = async () => {
            
             
             const phcommand = '/usr/bin/php /root/SCRIPTS/phpdb_inbound.php'
-            const phmessage = 'Uploading backupd cdr to PhDB...'
+            const phmessage = 'Uploading backup cdr to PhDB...'
             await uploadtoDB(countph,phcdrs[0],backupcdrs,phcommand,phmessage, 'phdb' )
             
             const maindb2command = '/usr/bin/php /root/SCRIPTS/inbound-maindb2.php' 
-            const maindb2message = 'Uploading backupd cdr to MainDB2...'
+            const maindb2message = 'Uploading backup cdr to MainDB2...'
             await uploadtoDB(maindbcount2,maindbtcdrs2[0],backupcdrs,maindb2command,phmessage, 'maindb2' )
             process.exit(0)
 
@@ -203,13 +203,13 @@ const syncDb = async () => {
         
         if(countbackup > maindbcount2){
             const maindb2command = '/usr/bin/php /root/SCRIPTS/inbound-maindb2.php' 
-            const maindb2message = 'Uploading backupd cdr to MainDB2...'
+            const maindb2message = 'Uploading backup cdr to MainDB2...'
             await uploadtoDB(maindbcount2,maindbtcdrs2[0],backupcdrs,maindb2command,maindb2message, 'maindb2' )
             process.exit(0)
         }
          if(countbackup > countph){
            const command = '/usr/bin/php /root/SCRIPTS/phpdb_inbound.php'
-           const message = 'Uploading backupd cdr to PhDB...' 
+           const message = 'Uploading backup cdr to PhDB...' 
            await uploadtoDB(countph,phcdrs[0],backupcdrs,command,message, 'phdb' )
             process.exit(0)
         }
