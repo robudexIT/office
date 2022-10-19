@@ -159,7 +159,7 @@ const syncDb = async () => {
 
         //query maindb cdrs;
         let choose_date = choosedate.replaceAll("-","")
-        query = `SELECT * FROM tblSBTCallDetails_Incoming WHERE  (CdtCalledParty='0452909480' OR CdtCalledParty='0452909485') AND CdtStartDate=${choose_date};`
+        query = `SELECT * FROM tblSBTCallDetails_Incoming WHERE  ((CdtCalledParty='0452909480' AND CdtAcceptedParty LIKE 'sbphilippines:sbtrading%') OR CdtCalledParty='0452909485') AND CdtStartDate=${choose_date};`
         let maindbtcdrs  = await maindb(query)
         maindbtcdrs = maindbtcdrs.recordset
         let maindbcount = maindbtcdrs.length
@@ -289,8 +289,7 @@ const countAllCdr = async () => {
         countphcdr= parseInt(countphcdr)
         let choose_date = choosedate.replaceAll("-","")
         //query maindb(2x-db)
-         query = `SELECT Count(*) FROM tblSBTCallDetails_Incoming WHERE  (CdtCalledParty='0452909480' OR CdtCalledParty='0452909485') AND CdtStartDate=${choose_date};`
-         let maindbcountcdr  = await maindb(query)
+        query = `SELECT * FROM tblSBTCallDetails_Incoming WHERE  ((CdtCalledParty='0452909480' AND CdtAcceptedParty LIKE 'sbphilippines:sbtrading%') OR CdtCalledParty='0452909485') AND CdtStartDate=${choose_date}`
          maindbcountcdr = maindbcountcdr.recordset[0]['']
          console.log(maindbcountcdr)
          maindbcountcdr = parseInt(maindbcountcdr)
