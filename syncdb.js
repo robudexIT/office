@@ -202,7 +202,7 @@ const syncDb = async () => {
         }
         
         if(countbackup > maindbcount2){
-            const maindb2command = '/usr/bin/php /root/SCRIPTS/inbound-mysqlserver.php' 
+            const maindb2command = '/usr/bin/php /root/SCRIPTS/inbound-maindb2.php' 
             const maindb2message = 'Uploading backupd cdr to MainDB2...'
             await uploadtoDB(maindbcount2,maindbtcdrs2[0],backupcdrs,maindb2command,maindb2message, 'maindb2' )
             process.exit(0)
