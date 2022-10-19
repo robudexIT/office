@@ -199,35 +199,7 @@ const syncDb = async () => {
             process.exit(0)
         }
          if(countbackup > countph){
-            console.log('Uploading backupd cdr to PhDB...')
-            //when there is no found cdr's upload all backups to phdb
-            if(countph == 0){
-                console.log('no cdrs on phdb uploading backup to phdb')
-                // exten => h,n,System(/usr/bin/php /root/SCRIPTS/inbound_callstatus.php ${CALL_TIME} ${END_TIME} ${DIALSTATUS} ${CALLER} ${CALLED_NO} ${DIALEDPEERNUMBER})
-                for (let bcdr of backupcdrs){
-                    const { stdout, stderr } = await exec(`/usr/bin/php /root/SCRIPTS/phpdb_inbound.php ${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${bcdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.date}`)
-                    // console.log(` uploading ${bcdr.startTimeStamp} cdr completed..`)
-                    console.log( stdout)
-                    console.log( stderr)
-                }
-                
-            }else{
-                const startTimeStamp = phcdrs[0].map(cdr => cdr.StartTimeStamp)
-                missingcdrs =  backupcdrs.filter(bcdr => {
-                    const isOntables = startTimeStamp.includes(bcdr.startTimeStamp)
-                    if(isOntables){
-                        return false
-                    }
-                    return true
-                })
-                for(let cdr of missingcdrs){
-                    const { stdout, stderr } = await exec(`/usr/bin/php /root/SCRIPTS/phpdb_inbound.php ${cdr.startTimeStamp} ${cdr.endTimeStamp} ${cdr.callStatus} ${cdr.caller} ${cdr.calledNumber} ${cdr.whoAnsweredCall} ${cdr.date}`)
-                    // console.log(` uploading ${bcdr.startTimeStamp} cdr completed..`)
-                    console.log( stdout)
-                    console.log( stderr)
-                }
-            }
-            
+            uploadtophDB()
             process.exit(0)
         }
 
@@ -236,8 +208,36 @@ const syncDb = async () => {
     }catch(error){
         console.log(error)
     }
-    function filtercdr(cdr){
-        console.log('begin filtering here....')
+    async function uploadtophDB(){
+        console.log('Uploading backupd cdr to PhDB...')
+        //when there is no found cdr's upload all backups to phdb
+        if(countph == 0){
+            console.log('no cdrs on phdb uploading backup to phdb')
+           
+            for (let bcdr of backupcdrs){
+                const { stdout, stderr } = await exec(`/usr/bin/php /root/SCRIPTS/phpdb_inbound.php ${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${bcdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.date}`)
+               
+                console.log( stdout)
+                console.log( stderr)
+            }
+            
+        }else{
+            const startTimeStamp = phcdrs[0].map(cdr => cdr.StartTimeStamp)
+            missingcdrs =  backupcdrs.filter(bcdr => {
+                const isOntables = startTimeStamp.includes(bcdr.startTimeStamp)
+                if(isOntables){
+                    return false
+                }
+                return true
+            })
+            for(let cdr of missingcdrs){
+                const { stdout, stderr } = await exec(`/usr/bin/php /root/SCRIPTS/phpdb_inbound.php ${cdr.startTimeStamp} ${cdr.endTimeStamp} ${cdr.callStatus} ${cdr.caller} ${cdr.calledNumber} ${cdr.whoAnsweredCall} ${cdr.date}`)
+                // console.log(` uploading ${bcdr.startTimeStamp} cdr completed..`)
+                console.log( stdout)
+                console.log( stderr)
+            }
+        }
+        
     }
 }
 
