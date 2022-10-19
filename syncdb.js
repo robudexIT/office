@@ -163,19 +163,19 @@ const syncDb = async () => {
         let maindbtcdrs  = await maindb(query)
         maindbtcdrs = maindbtcdrs.recordset
         let maindbcount = maindbtcdrs.length
-        let maindbtcdrs2 = await maindb2(query)
-        maindbcount2 = maindbtcdrs2[0].length
+        // let maindbtcdrs2 = await maindb2(query)
+        // maindbcount2 = maindbtcdrs2[0].length
 
         countph = parseInt(countph)
         countbackup = parseInt(countbackup)
         maindbcount = parseInt(maindbcount)
-        maindbcount2 = parseInt(maindbcount2)
+        // maindbcount2 = parseInt(maindbcount2)
 
-        
-        console.log(countph)
-        console.log(countbackup)
-        console.log(maindbcount)
-        console.log(maindbcount2)
+    
+        console.log(`BackupDB has ${countbackup} cdr`)
+        console.log(`PHDB has ${countph} cdr`)
+        console.log(`MainDB has ${maindbcount} cdr`)
+        // console.log(maindbcount2)
 
         let missingcdrs = []
 
@@ -184,24 +184,24 @@ const syncDb = async () => {
             process.exit(0)
         }
 
-        if(countbackup > countph && countbackup > maindbcount2){
+        if(countbackup > countph && countbackup > maindbcount){
            
             
             const phcommand = '/usr/bin/php /root/SCRIPTS/phpdb_inbound.php'
             const phmessage = 'Uploading backup cdr to PhDB...'
             await uploadtoDB(countph,phcdrs[0],backupcdrs,phcommand,phmessage, 'phdb' )
             
-            const maindb2command = '/usr/bin/php /root/SCRIPTS/inbound-maindb2.php' 
-            const maindb2message = 'Uploading backup cdr to MainDB2...'
-            await uploadtoDB(maindbcount2,maindbtcdrs2[0],backupcdrs,maindb2command,maindb2message, 'maindb2' )
+            const maindbcommand = '/usr/bin/php /root/SCRIPTS/inbound-maindb2.php' 
+            const maindbmessage = 'Uploading backup cdr to MainDB...'
+            await uploadtoDB(maindbcount2,maindbtcdrs,backupcdrs,maindbcommand,maindb2message, 'maindb' )
             process.exit(0)
 
         }
         
-        if(countbackup > maindbcount2){
-            const maindb2command = '/usr/bin/php /root/SCRIPTS/inbound-maindb2.php' 
-            const maindb2message = 'Uploading backup cdr to MainDB2...'
-            await uploadtoDB(maindbcount2,maindbtcdrs2[0],backupcdrs,maindb2command,maindb2message, 'maindb2' )
+        if(countbackup > maindbcount){
+            const maindbcommand = '/usr/bin/php /root/SCRIPTS/inbound-maindb.php' 
+            const maindbmessage = 'Uploading backup cdr to MainDB...'
+            await uploadtoDB(maindbcount2,maindbtcdrs,backupcdrs,maindbcommand,maindb2message, 'maindb' )
             process.exit(0)
         }
          if(countbackup > countph){
@@ -295,34 +295,33 @@ const countAllCdr = async () => {
         query = `SELECT Count(*) FROM tblSBTCallDetails_Incoming WHERE  ((CdtCalledParty='0452909480' AND CdtAcceptedParty LIKE 'sbphilippines:sbtrading%') OR CdtCalledParty='0452909485') AND CdtStartDate=${choose_date}`
          let maindbcountcdr  = await maindb(query)
          maindbcountcdr = maindbcountcdr.recordset[0]['']
-         console.log(maindbcountcdr)
          maindbcountcdr = parseInt(maindbcountcdr)
 
          //query maindb2 
-        //  query = `SELECT Count(*) FROM tblSBTCallDetails_Incoming WHERE CdtStartDate=${choose_date} AND CdtCalledParty='0452909485'`
-         let maindbcountcdr2  = await maindb2(query)
+        
+        //  let maindbcountcdr2  = await maindb2(query)
                      
-         maindbcountcdr2 =   parseInt(maindbcountcdr2[0][0]['Count(*)'])
+        //  maindbcountcdr2 =   parseInt(maindbcountcdr2[0][0]['Count(*)'])
         // console.log(maindbcountcdr2[0][0]['Count(*)'])
-        console.log('backup has' + countbackupcdr+' cdr')
-        console.log('phdb has' + countphcdr+ ' cdr') 
-        console.log('maindb has' +maindbcountcdr+ ' cdr')
-        console.log('maindb2 has' +maindbcountcdr2+ 'cdr ')
+        console.log('BackupDB has ' + countbackupcdr+' cdr')
+        console.log('PhDB has ' + countphcdr+ ' cdr') 
+        console.log('MainDB has ' +maindbcountcdr+ ' cdr')
+        // console.log('maindb2 has ' +maindbcountcdr2+ 'cdr ')
         let missing
-        if(countbackupcdr == countphcdr && countbackupcdr == maindbcountcdr2){
+        if(countbackupcdr == countphcdr && countbackupcdr == maindbcountcdr){
             console.log('MainDB and PhDB are in sync...')
             process.exit(0)
         }
-        if(countbackupcdr > countphcdr && countbackupcdr > maindbcountcdr2){
-            let mainmissing  = countbackupcdr - maindbcountcdr2;
+        if(countbackupcdr > countphcdr && countbackupcdr > maindbcountcdr){
+            let mainmissing  = countbackupcdr - maindbcountcdr;
             let phmissing = countbackupcdr - countphcdr
             console.log(`The Main DB have missing of ${mainmissing} cdr records please start syncdb now` )
             console.log(`The PH DB have missing of ${phmissing} cdr records please start syncdb now` )
             process.exit(0)
         }
          
-        if(countbackupcdr > maindbcountcdr2){
-            missing =  countbackupcdr - maindbcountcdr2
+        if(countbackupcdr > maindbcountcdr){
+            missing =  countbackupcdr - maindbcountcdr
             console.log(`The Main DB have missing of ${missing} cdr records please start sync now`)
             process.exit(0)
         }
