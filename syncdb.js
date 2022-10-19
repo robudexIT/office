@@ -226,7 +226,13 @@ const syncDb = async () => {
             console.log(`no cdrs on ${db} uploading backup to ${db}`)
            
             for (let bcdr of backupcdrs){
-                const { stdout, stderr } = await exec(`${command} ${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${bcdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.date}`)
+                let params = ''
+                if(db == 'phdb'){
+                    params = `${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${cdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.date}`
+                }else{
+                    params = `${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${bcdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.filename} ${bcdr.duration}`
+                }
+                const { stdout, stderr } = await exec(`${command} ${params}`)
                
                 console.log( stdout)
                 console.log( stderr)
