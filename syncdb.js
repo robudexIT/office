@@ -199,7 +199,7 @@ const syncDb = async () => {
             process.exit(0)
         }
          if(countbackup > countph){
-           await uploadtophDB()
+           await uploadtophDB(countph,backupcdrs,phcdrs )
             process.exit(0)
         }
 
@@ -208,7 +208,7 @@ const syncDb = async () => {
     }catch(error){
         console.log(error)
     }
-    async function uploadtophDB(){
+    async function uploadtophDB(countph,backupcdrs,phcdrs){
         console.log('Uploading backupd cdr to PhDB...')
         //when there is no found cdr's upload all backups to phdb
         if(countph == 0){
