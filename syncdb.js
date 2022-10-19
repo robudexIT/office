@@ -212,13 +212,13 @@ const syncDb = async () => {
                 }
                 
             }else{
-                const startTimeStamp = phcdrs.map(cdr => cdr.StartTimeStamp)
+                const startTimeStamp = phcdrs[0].map(cdr => cdr.StartTimeStamp)
                 missingcdrs =  backupcdrs.filter(bcdr => {
                     const isOntables = startTimeStamp.includes(bcdr.startTimeStamp)
-                    if(!isOntables){
-                        return true
+                    if(isOntables){
+                        return false
                     }
-                    return false
+                    return true
                 })
                 console.log(missingcdrs)
             }
