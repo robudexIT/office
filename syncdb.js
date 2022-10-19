@@ -172,8 +172,6 @@ const syncDb = async () => {
         maindbcount2 = parseInt(maindbcount2)
 
         
-       
-
         console.log(countph)
         console.log(countbackup)
         console.log(maindbcount)
@@ -195,7 +193,7 @@ const syncDb = async () => {
             
             const maindb2command = '/usr/bin/php /root/SCRIPTS/inbound-maindb2.php' 
             const maindb2message = 'Uploading backup cdr to MainDB2...'
-            await uploadtoDB(maindbcount2,maindbtcdrs2[0],backupcdrs,maindb2command,phmessage, 'maindb2' )
+            await uploadtoDB(maindbcount2,maindbtcdrs2[0],backupcdrs,maindb2command,maindb2message, 'maindb2' )
             process.exit(0)
 
         }
@@ -306,10 +304,10 @@ const countAllCdr = async () => {
                      
          maindbcountcdr2 =   parseInt(maindbcountcdr2[0][0]['Count(*)'])
         // console.log(maindbcountcdr2[0][0]['Count(*)'])
-        console.log('backup ' + countbackupcdr)
-        console.log('phdb ' + countphcdr)
-        console.log('maindb ' +maindbcountcdr)
-        console.log('maindb2 ' +maindbcountcdr2)
+        console.log('backup has' + countbackupcdr+' cdr')
+        console.log('phdb has' + countphcdr+ ' cdr') 
+        console.log('maindb has' +maindbcountcdr+ ' cdr')
+        console.log('maindb2 has' +maindbcountcdr2+ 'cdr ')
         let missing
         if(countbackupcdr == countphcdr && countbackupcdr == maindbcountcdr2){
             console.log('MainDB and PhDB are in sync...')
