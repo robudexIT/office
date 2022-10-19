@@ -199,7 +199,7 @@ const syncDb = async () => {
             process.exit(0)
         }
          if(countbackup > countph){
-            uploadtophDB()
+           await uploadtophDB()
             process.exit(0)
         }
 
