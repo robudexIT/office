@@ -194,7 +194,7 @@ const syncDb = async () => {
             const phmessage = 'Uploading backupd cdr to PhDB...'
             await uploadtoDB(countph,phcdrs[0],backupcdrs,phcommand,phmessage, 'phdb' )
             
-            const maindb2command = '/usr/bin/php /root/SCRIPTS/inbound-mysqlserver.php' 
+            const maindb2command = '/usr/bin/php /root/SCRIPTS/inbound-maindb2.php' 
             const maindb2message = 'Uploading backupd cdr to MainDB2...'
             await uploadtoDB(maindbcount2,maindbtcdrs2[0],backupcdrs,maindb2command,phmessage, 'maindb2' )
             process.exit(0)
@@ -223,7 +223,7 @@ const syncDb = async () => {
         console.log(`${message}`)
         //when there is no found cdr's upload all backups to phdb
         if(cdrcount == 0){
-            console.log('no cdrs on phdb uploading backup to phdb')
+            console.log(`no cdrs on ${db} uploading backup to ${db}`)
            
             for (let bcdr of backupcdrs){
                 const { stdout, stderr } = await exec(`${command} ${bcdr.startTimeStamp} ${bcdr.endTimeStamp} ${bcdr.callStatus} ${bcdr.caller} ${bcdr.calledNumber} ${bcdr.whoAnsweredCall} ${bcdr.date}`)
