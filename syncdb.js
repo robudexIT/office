@@ -61,7 +61,7 @@ const phdb = async (query) => {
 const maindb2  = async(query) => {
      try{
         const connection = await mysql.createConnection({host: mysqlserver_host, user: mysqlserver_user, password:mysqlserver_pwd, database: mysqlserver_db});
-        return connection.execute(query);
+        return connection.execute(query,[choosedate]);
     }catch(error){
         console.log(error)
     }
@@ -289,6 +289,7 @@ const countAllCdr = async () => {
          maindbcountcdr = parseInt(maindbcountcdr)
 
          //query maindb2 
+         query = `SELECT Count(*) FROM tblSBTCallDetails_Incoming WHERE CdtStartDate=? AND CdtCalledParty='0452909485'`
           [rows,fields] = await maindb2(query)
           let maindbcountcdr2 = rows[0]['Count(*)']
           maindbcountcdr2 = parseInt(maindbcountcdr2)
