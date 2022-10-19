@@ -189,7 +189,7 @@ const syncDb = async () => {
 
         if(countbackup > countph && countbackup > maindbcount2){
            
-            console.log('Uploading backup cdr to MainDB and PhDB')
+            
             const phcommand = '/usr/bin/php /root/SCRIPTS/phpdb_inbound.php'
             const phmessage = 'Uploading backupd cdr to PhDB...'
             await uploadtoDB(countph,phcdrs[0],backupcdrs,phcommand,phmessage, 'phdb' )
