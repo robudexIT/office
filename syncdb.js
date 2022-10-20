@@ -166,7 +166,7 @@ const syncDb = async () => {
 
         let missingcdrs = []
 
-        if(countbackup == countph && countbackup == maindbcount2){
+        if(countbackup == countph && countbackup == maindbcount){
             console.log('Two Database are sync in records..No need to run sync')
             process.exit(0)
         }
@@ -187,7 +187,7 @@ const syncDb = async () => {
                 
                 const maindbcommand = '/usr/bin/php /root/SCRIPTS/inbound-maindb2.php' 
                 const maindbmessage = 'Uploading backup cdr to MainDB...'
-                await uploadtoDB(maindbcount2,maindbtcdrs,backupcdrs,maindbcommand,maindb2message, 'maindb' )
+                await uploadtoDB(maindbcount,maindbtcdrs,backupcdrs,maindbcommand,maindb2message, 'maindb' )
                 process.exit(0)
             }
         }
@@ -201,7 +201,7 @@ const syncDb = async () => {
             if(option == 'startsync'){
                 const maindbcommand = '/usr/bin/php /root/SCRIPTS/inbound-maindb.php' 
                 const maindbmessage = 'Uploading backup cdr to MainDB...'
-                await uploadtoDB(maindbcount2,maindbtcdrs,backupcdrs,maindbcommand,maindb2message, 'maindb' )
+                await uploadtoDB(maindbcount,maindbtcdrs,backupcdrs,maindbcommand,maindb2message, 'maindb' )
                 process.exit(0)
             }
            
