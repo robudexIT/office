@@ -23,7 +23,10 @@ if(option == 'Undefined' || option == '' ){
     console.log('second argument must be check|startsync')
     process.exit(0)
 }
-
+// MYSQLSERVERHOST=localhost
+// MYSQLSERVERUSER=root
+// MYSQLSERVERPWD=sbtdbjapan@2022
+// MYSQLSERVERDB=VRS
 const mysqlserver_host = process.env.MYSQLSERVERHOST
 const mysqlserver_user = process.env.MYSQLSERVERUSER
 const mysqlserver_pwd = process.env.MYSQLSERVERPWD
@@ -133,6 +136,14 @@ const InboundCdr = db.define('InboundCdr', {
 
 InboundCdr.sync()
 
+const findAllCdr = async () => {
+    try {
+        return InboundCdr.findAll()
+
+    }catch(error){
+        console.log(error)
+    }
+}
 
 const syncDb = async () => {
     try {
@@ -140,7 +151,6 @@ const syncDb = async () => {
         //query backupcdrs;
         let backupcdrs = await InboundCdr.findAll({where:{date:choosedate}})
         let countbackup = backupcdrs.length
-        let missing
         
         //query phdb cdrs;
         query = `SELECT * FROM  inbound_callstatus WHERE getDate=?`
@@ -153,16 +163,19 @@ const syncDb = async () => {
         let maindbtcdrs  = await maindb(query)
         maindbtcdrs = maindbtcdrs.recordset
         let maindbcount = maindbtcdrs.length
-     
+        // let maindbtcdrs2 = await maindb2(query)
+        // maindbcount2 = maindbtcdrs2[0].length
+
         countph = parseInt(countph)
         countbackup = parseInt(countbackup)
         maindbcount = parseInt(maindbcount)
-        
+        // maindbcount2 = parseInt(maindbcount2)
+
     
         console.log(`BackupDB has ${countbackup} cdr`)
         console.log(`PHDB has ${countph} cdr`)
         console.log(`MainDB has ${maindbcount} cdr`)
-      
+        // console.log(maindbcount2)
 
         let missingcdrs = []
 
@@ -172,54 +185,32 @@ const syncDb = async () => {
         }
 
         if(countbackup > countph && countbackup > maindbcount){
-            if(option == 'check'){
-                let mainmissing  = countbackup - maindbcount;
-                let phmissing = countbackup - countph
-                console.log(`The Main DB have missing of ${mainmissing} cdr records please start syncdb now` )
-                console.log(`The PH DB have missing of ${phmissing} cdr records please start syncdb now` )
-                process.exit(0)
-               
-            }
-            if(option == 'startsync'){
-                const phcommand = '/usr/bin/php /root/SCRIPTS/phpdb_inbound.php'
-                const phmessage = 'Uploading backup cdr to PhDB...'
-                await uploadtoDB(countph,phcdrs[0],backupcdrs,phcommand,phmessage, 'phdb' )
-                
-                const maindbcommand = '/usr/bin/php /root/SCRIPTS/inbound-maindb2.php' 
-                const maindbmessage = 'Uploading backup cdr to MainDB...'
-                await uploadtoDB(maindbcount2,maindbtcdrs,backupcdrs,maindbcommand,maindb2message, 'maindb' )
-                process.exit(0)
-            }
+           
+            
+            const phcommand = '/usr/bin/php /root/SCRIPTS/phpdb_inbound.php'
+            const phmessage = 'Uploading backup cdr to PhDB...'
+            await uploadtoDB(countph,phcdrs[0],backupcdrs,phcommand,phmessage, 'phdb' )
+            
+            const maindbcommand = '/usr/bin/php /root/SCRIPTS/inbound-maindb2.php' 
+            const maindbmessage = 'Uploading backup cdr to MainDB...'
+            await uploadtoDB(maindbcount2,maindbtcdrs,backupcdrs,maindbcommand,maindb2message, 'maindb' )
+            process.exit(0)
+
         }
         
         if(countbackup > maindbcount){
-            if(option == 'check'){
-                missing =  countbackup - maindbcount
-                console.log(`The Main DB have missing of ${missing} cdr records please start sync now`)
-                process.exit(0)
-            }
-            if(option == 'startsync'){
-                const maindbcommand = '/usr/bin/php /root/SCRIPTS/inbound-maindb.php' 
-                const maindbmessage = 'Uploading backup cdr to MainDB...'
-                await uploadtoDB(maindbcount2,maindbtcdrs,backupcdrs,maindbcommand,maindb2message, 'maindb' )
-                process.exit(0)
-            }
-           
+            const maindbcommand = '/usr/bin/php /root/SCRIPTS/inbound-maindb.php' 
+            const maindbmessage = 'Uploading backup cdr to MainDB...'
+            await uploadtoDB(maindbcount2,maindbtcdrs,backupcdrs,maindbcommand,maindb2message, 'maindb' )
+            process.exit(0)
         }
          if(countbackup > countph){
-            if(option == 'check'){
-                missing =  countbackup -  countph
-                console.log(`The Ph DB have missing of ${missing} cdr records please start sync now`)
-                process.exit(0)
-            }
-            if(option == 'startsync'){
-                const command = '/usr/bin/php /root/SCRIPTS/phpdb_inbound.php'
-                const message = 'Uploading backup cdr to PhDB...' 
-                await uploadtoDB(countph,phcdrs[0],backupcdrs,command,message, 'phdb' )
-                 process.exit(0)
-            }
-          
+           const command = '/usr/bin/php /root/SCRIPTS/phpdb_inbound.php'
+           const message = 'Uploading backup cdr to PhDB...' 
+           await uploadtoDB(countph,phcdrs[0],backupcdrs,command,message, 'phdb' )
+            process.exit(0)
         }
+
         console.log('Backup DB has been compromise....backup should always have the complete cdr records....')
         process.exit(0)
     }catch(error){
@@ -281,11 +272,76 @@ const syncDb = async () => {
     }
 }
 
+const countAllCdr = async () => {
+    try {
+        let query;
+        //query backupdb
+        let {count, row} = await InboundCdr.findAndCountAll({where:{date:choosedate}})
+        let countbackupcdr = parseInt(count)
+
+        //query phdb
+        query = `SELECT Count(*) FROM  inbound_callstatus WHERE getDate=?`
+        let [rows,fields] = await phdb(query)
+        let countphcdr = rows[0]['Count(*)']
+
+        //query phdb cdrs;
+        query = `SELECT * FROM  inbound_callstatus WHERE getDate=?`
+        phcdrs = await phdb(query)
+        let countph = phcdrs[0].length
+
+        countphcdr= parseInt(countphcdr)
+        let choose_date = choosedate.replaceAll("-","")
+        //query maindb(2x-db)
+        query = `SELECT Count(*) FROM tblSBTCallDetails_Incoming WHERE  ((CdtCalledParty='0452909480' AND CdtAcceptedParty LIKE 'sbphilippines:sbtrading%') OR CdtCalledParty='0452909485') AND CdtStartDate=${choose_date}`
+         let maindbcountcdr  = await maindb(query)
+         maindbcountcdr = maindbcountcdr.recordset[0]['']
+         maindbcountcdr = parseInt(maindbcountcdr)
+
+         //query maindb2 
+        
+        //  let maindbcountcdr2  = await maindb2(query)
+                     
+        //  maindbcountcdr2 =   parseInt(maindbcountcdr2[0][0]['Count(*)'])
+        // console.log(maindbcountcdr2[0][0]['Count(*)'])
+        console.log('BackupDB has ' + countbackupcdr+' cdr')
+        console.log('PhDB has ' + countphcdr+ ' cdr') 
+        console.log('MainDB has ' +maindbcountcdr+ ' cdr')
+        // console.log('maindb2 has ' +maindbcountcdr2+ 'cdr ')
+        let missing
+        if(countbackupcdr == countphcdr && countbackupcdr == maindbcountcdr){
+            console.log('MainDB and PhDB are in sync...')
+            process.exit(0)
+        }
+        if(countbackupcdr > countphcdr && countbackupcdr > maindbcountcdr){
+            let mainmissing  = countbackupcdr - maindbcountcdr;
+            let phmissing = countbackupcdr - countphcdr
+            console.log(`The Main DB have missing of ${mainmissing} cdr records please start syncdb now` )
+            console.log(`The PH DB have missing of ${phmissing} cdr records please start syncdb now` )
+            process.exit(0)
+        }
+         
+        if(countbackupcdr > maindbcountcdr){
+            missing =  countbackupcdr - maindbcountcdr
+            console.log(`The Main DB have missing of ${missing} cdr records please start sync now`)
+            process.exit(0)
+        }
+         if(countbackupcdr > countphcdr){
+            missing =  countbackupcdr -  countphcdr
+            console.log(`The Ph DB have missing of ${missing} cdr records please start sync now`)
+            process.exit(0)
+        }
+        console.log('Backup DB has been compromise....backup should always have the complete cdr records....')
+        process.exit(0)
+    }catch(error){
+        console.log(error)
+    }
+}
 
 
-if(option == 'check' || option == 'startsync'){
-    syncDb()
-
+if(option == 'check'){
+    countAllCdr()
+}else if (option == 'startsync'){
+    syncDb() 
 }else{
     console.log('Second arguments is invalid...')
     process.exit(0)
@@ -294,3 +350,12 @@ if(option == 'check' || option == 'startsync'){
 
 
 
+// exten => h,n,System(/root/inbound-sqlserver.php ${CALL_TIME} ${END_TIME} ${DIALSTATUS} ${CALLER} ${CALLED_NO} ${DIALEDPEERNUMBER} ${RECORDING_
+//     FILENAME} ${ANSWEREDTIME})
+//     exten => h,n,System(/root/SCRIPTS/inbound-mysqlserver.php ${CALL_TIME} ${END_TIME} ${DIALSTATUS} ${CALLER} ${CALLED_NO} ${DIALEDPEERNUMBER} ${
+//     RECORDING_FILENAME} ${ANSWEREDTIME})
+//     exten => h,n,System(/usr/bin/php /root/SCRIPTS/inbound_callstatus.php ${CALL_TIME} ${END_TIME} ${DIALSTATUS} ${CALLER} ${CALLED_NO} ${DIALEDPE
+//     ERNUMBER})
+//     exten => h,n,System(/usr/bin/php /root/SCRIPTS/inbound_callstatus2.php ${CALL_TIME} ${END_TIME} ${DIALSTATUS} ${CALLER} ${CALLED_NO} ${DIALEDP
+//     EERNUMBER})
+//     ;exten => h,n,System(/usr/bin/php /root/SCRIPTS/delete_waiting.php ${CALLERID(num)})
