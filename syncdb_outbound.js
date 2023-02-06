@@ -12,9 +12,17 @@ const sqlserver = require('mssql')
 const args = process.argv.slice(2);
 const choosedate = args[0];
 const option  = args[1]
-// const extensions = ['6318', '2147']
-// console.log( extensions)
-
+let  extensions = args[2].split(",")
+let extensions_string = ''
+for (let i=0 ;extensions.length>i ; i++){
+   
+    if(i < extensions.length && extensions_string != ""){
+        extensions_string+=`,`
+    }
+    
+    extensions_string+=`\"${extensions[i]}\"`
+}
+console.log(extensions_string)
 console.log(option)
 if(choosedate == 'Undefined' ||  !Date.parse(choosedate)){
     console.log('Date Arguments is need')
@@ -27,11 +35,11 @@ if(option == 'Undefined' || option == '' ){
     process.exit(0)
 }
 
-// if(extensions == "Undefined" || extensions == ''){
-//     console.log('Please provide second argument..')
-//     console.log('second argument must be check|startsync')
-//     process.exit(0)
-// }
+if(extensions == "Undefined" || extensions == ''){
+    console.log('Please provide second argument..')
+    console.log('second argument must be check|startsync')
+    process.exit(0)
+}
 
 
 const mysqlserverph_host = process.env.MYSQLSERVERPHHOST
@@ -63,7 +71,7 @@ const maindb = async (query) => {
 const phdb = async (query) => {
     try{
         const connection = await mysql.createConnection({host: mysqlserverph_host, user: mysqlserverph_user, password:mysqlserverph_pwd, database: mysqlserverph_db});
-        return connection.execute(query,[choosedate] );
+        return connection.execute(query,[choosedate, extensions_string] );
     }catch(error){
         console.log(error)
     }
@@ -78,7 +86,7 @@ const syncdb = async (query) => {
          // for collection table = collectionteam_callsummary
          //for everone = outbound
 
-         query = `SELECT * FROM  outbound WHERE getDate=? AND Caller IN("6318","2147")`
+         query = `SELECT * FROM  outbound WHERE getDate=? AND Caller IN(?)`
          phcdrs = await phdb(query)
          let countph = phcdrs[0].length
          
