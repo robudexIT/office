@@ -60,6 +60,7 @@ const maindb = async (query) => {
         password: sqlserver_pass,
         database: sqlserver_db,
         server:  sqlserver_host,
+        connectionTimeout: 30000, 
         pool: {
           max: 10,
           min: 0,
