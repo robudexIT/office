@@ -93,7 +93,7 @@ const syncdb = async (query) => {
          
          //query maindb cdrs;
          let choose_date = choosedate.replaceAll("-","")
-         query = `SELECT * FROM tblSBTCallDetails_AddressBook  ;`
+         query = `SELECT * FROM tblSBTCallDetails_AddressBook CdtURL='http://192.168.45.110/callrecording/outgoing/20230207/6318-010243814628236-20230207-004229.mp3';`
          let maindbtcdrs  = await maindb(query)
          maindbtcdrs = maindbtcdrs.recordset
          let maindbcount = maindbtcdrs.length
