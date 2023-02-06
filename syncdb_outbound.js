@@ -12,7 +12,7 @@ const sqlserver = require('mssql')
 const args = process.argv.slice(2);
 const choosedate = args[0];
 const option  = args[1]
-const extensions = ['6318', '2147']
+// const extensions = ['6318', '2147']
 console.log( extensions)
 
 console.log(option)
@@ -63,7 +63,7 @@ const maindb = async (query) => {
 const phdb = async (query) => {
     try{
         const connection = await mysql.createConnection({host: mysqlserverph_host, user: mysqlserverph_user, password:mysqlserverph_pwd, database: mysqlserverph_db});
-        return connection.execute(query,[choosedate,extensions] );
+        return connection.execute(query,[choosedate] );
     }catch(error){
         console.log(error)
     }
@@ -78,7 +78,7 @@ const syncdb = async (query) => {
          // for collection table = collectionteam_callsummary
          //for everone = outbound
 
-         query = `SELECT * FROM  outbound WHERE getDate=? AND Caller IN(?)`
+         query = `SELECT * FROM  outbound WHERE getDate=? AND Caller IN("6318","2147")`
          phcdrs = await phdb(query)
          let countph = phcdrs[0].length
          
