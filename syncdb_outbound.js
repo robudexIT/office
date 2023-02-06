@@ -20,7 +20,7 @@ for (let i=0 ;extensions.length>i ; i++){
         extensions_string+=`,`
     }
     
-    extensions_string+=`\"${extensions[i]}\"`
+    extensions_string+=`${extensions[i]}`
 }
 console.log(extensions_string)
 console.log(option)
