@@ -61,7 +61,7 @@ const maindb = async (query) => {
         database: sqlserver_db,
         server:  sqlserver_host,
         connectionTimeout: 30000, 
-        requestTimeout:  30000,
+        requestTimeout:  60000,
         pool: {
           max: 10,
           min: 0,
