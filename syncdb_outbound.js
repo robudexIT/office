@@ -27,11 +27,11 @@ if(option == 'Undefined' || option == '' ){
     process.exit(0)
 }
 
-if(extensions == "Undefined" || extensions == ''){
-    console.log('Please provide second argument..')
-    console.log('second argument must be check|startsync')
-    process.exit(0)
-}
+// if(extensions == "Undefined" || extensions == ''){
+//     console.log('Please provide second argument..')
+//     console.log('second argument must be check|startsync')
+//     process.exit(0)
+// }
 
 
 const mysqlserverph_host = process.env.MYSQLSERVERPHHOST
