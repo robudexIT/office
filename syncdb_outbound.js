@@ -80,20 +80,21 @@ const syncdb = async (query) => {
          query = `SELECT * FROM  outbound WHERE getDate=? AND Caller IN(?)`
          phcdrs = await phdb(query)
          let countph = phcdrs[0].length
- 
+         
+         
          //query maindb cdrs;
-         let choose_date = choosedate.replaceAll("-","")
-         query = `SELECT * FROM tblSBTCallDetails_AddressBook WHERE  CdtCallingParty IN(${extensions}) AND CdtStartDate=${choose_date};`
-         let maindbtcdrs  = await maindb(query)
-         maindbtcdrs = maindbtcdrs.recordset
-         let maindbcount = maindbtcdrs.length
+        //  let choose_date = choosedate.replaceAll("-","")
+        //  query = `SELECT * FROM tblSBTCallDetails_AddressBook WHERE  CdtCallingParty IN(${extensions}) AND CdtStartDate=${choose_date};`
+        //  let maindbtcdrs  = await maindb(query)
+        //  maindbtcdrs = maindbtcdrs.recordset
+        //  let maindbcount = maindbtcdrs.length
       
          countph = parseInt(countph)
-         maindbcount = parseInt(maindbcount)
+        //  maindbcount = parseInt(maindbcount)
          
      
          console.log(`PHDB has ${countph} cdr`)
-         console.log(`MainDB has ${maindbcount} cdr`)
+        //  console.log(`MainDB has ${maindbcount} cdr`)
     }catch(error){
         console.log(error)
     }
