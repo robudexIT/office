@@ -115,7 +115,7 @@ const syncdb = async (query) => {
          let maindbtcdrs  = await maindb(query)
          maindbtcdrs = maindbtcdrs.recordset
          let maindbcount = maindbtcdrs.length
-      
+         console.log(maindbtcdrs)
         //  countph = parseInt(countph)
          maindbcount = parseInt(maindbcount)
          
