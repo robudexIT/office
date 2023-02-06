@@ -12,8 +12,9 @@ const sqlserver = require('mssql')
 const args = process.argv.slice(2);
 const choosedate = args[0];
 const option  = args[1]
-const extensions = args[2].split(" ")
-
+const extensions = args[2].split(",")
+console.log( extensions)
+return
 console.log(option)
 if(choosedate == 'Undefined' ||  !Date.parse(choosedate)){
     console.log('Date Arguments is need')
