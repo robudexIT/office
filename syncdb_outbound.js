@@ -71,7 +71,7 @@ const maindb = async (query) => {
 const phdb = async (query) => {
     try{
         const connection = await mysql.createConnection({host: mysqlserverph_host, user: mysqlserverph_user, password:mysqlserverph_pwd, database: mysqlserverph_db});
-        return connection.execute(query,[choosedate, extensions_string] );
+        return connection.execute(query,[choosedate] );
     }catch(error){
         console.log(error)
     }
@@ -86,7 +86,7 @@ const syncdb = async (query) => {
          // for collection table = collectionteam_callsummary
          //for everone = outbound
 
-         query = `SELECT * FROM  outbound WHERE getDate=? AND Caller IN(?)`
+         query = `SELECT * FROM  outbound WHERE getDate=? AND Caller IN(${extensions_string})`
          phcdrs = await phdb(query)
          let countph = phcdrs[0].length
          
