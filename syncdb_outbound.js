@@ -55,8 +55,24 @@ const sqlserver_db  = process.env.SQLSERVERDB
 
 const maindb = async (query) => {
     console.log('This is the main db')
+    const sqlConfig = {
+        user: sqlserver_user,
+        password: sqlserver_pass,
+        database: sqlserver_db,
+        server:  sqlserver_host,
+        pool: {
+          max: 10,
+          min: 0,
+          idleTimeoutMillis: 30000
+        },
+        options: {
+          encrypt: false, // for azure
+          trustServerCertificate: false // change to true for local dev / self-signed certs
+        }
+      }
     try{
-        const sql = await sqlserver.connect(`Server=${sqlserver_host},1433;Database=${sqlserver_db};User Id=${sqlserver_user};Password=${sqlserver_pass};Encrypt=false`)
+        // const sql = await sqlserver.connect(`Server=${sqlserver_host},1433;Database=${sqlserver_db};User Id=${sqlserver_user};Password=${sqlserver_pass};Encrypt=false`)
+        const sql = await sqlserver.connect(sqlConfig)
         if(sql){
             console.log('Successfully Connected to MainDB...')
             return  sql.query(query)
