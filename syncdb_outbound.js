@@ -13,16 +13,16 @@ const args = process.argv.slice(2);
 const choosedate = args[0];
 const option  = args[1]
 let  extensions = args[2].split(",")
-let extensions_string = ''
-for (let i=0 ;extensions.length>i ; i++){
+// let extensions_string = ''
+// for (let i=0 ;extensions.length>i ; i++){
    
-    if(i < extensions.length && extensions_string != ""){
-        extensions_string+=`,`
-    }
+//     if(i < extensions.length && extensions_string != ""){
+//         extensions_string+=`,`
+//     }
     
-    extensions_string+=`${extensions[i]}`
-}
-console.log(extensions_string)
+//     extensions_string+=`${extensions[i]}`
+// }
+// console.log(extensions_string)
 console.log(option)
 if(choosedate == 'Undefined' ||  !Date.parse(choosedate)){
     console.log('Date Arguments is need')
@@ -86,24 +86,24 @@ const syncdb = async (query) => {
          // for collection table = collectionteam_callsummary
          //for everone = outbound
 
-         query = `SELECT * FROM  outbound WHERE getDate=? AND Caller IN(${extensions})`
-         phcdrs = await phdb(query)
-         let countph = phcdrs[0].length
+        //  query = `SELECT * FROM  outbound WHERE getDate=? AND Caller IN(${extensions})`
+        //  phcdrs = await phdb(query)
+        //  let countph = phcdrs[0].length
          
          
          //query maindb cdrs;
         //  let choose_date = choosedate.replaceAll("-","")
-        //  query = `SELECT * FROM tblSBTCallDetails_AddressBook WHERE  CdtCallingParty IN(${extensions}) AND CdtStartDate=${choose_date};`
-        //  let maindbtcdrs  = await maindb(query)
-        //  maindbtcdrs = maindbtcdrs.recordset
-        //  let maindbcount = maindbtcdrs.length
+         query = `SELECT * FROM tblSBTCallDetails_AddressBook WHERE  CdtCallingParty IN(${extensions}) AND CdtStartDate=${choose_date};`
+         let maindbtcdrs  = await maindb(query)
+         maindbtcdrs = maindbtcdrs.recordset
+         let maindbcount = maindbtcdrs.length
       
-         countph = parseInt(countph)
-        //  maindbcount = parseInt(maindbcount)
+        //  countph = parseInt(countph)
+         maindbcount = parseInt(maindbcount)
          
      
-         console.log(`PHDB has ${countph} cdr`)
-        //  console.log(`MainDB has ${maindbcount} cdr`)
+        //  console.log(`PHDB has ${countph} cdr`)
+         console.log(`MainDB has ${maindbcount} cdr`)
     }catch(error){
         console.log(error)
     }
