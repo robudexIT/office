@@ -13,7 +13,7 @@ const args = process.argv.slice(2);
 const choosedate = args[0];
 const option  = args[1]
 // const extensions = ['6318', '2147']
-console.log( extensions)
+// console.log( extensions)
 
 console.log(option)
 if(choosedate == 'Undefined' ||  !Date.parse(choosedate)){
