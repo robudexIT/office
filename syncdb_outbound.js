@@ -86,7 +86,7 @@ const syncdb = async (query) => {
          // for collection table = collectionteam_callsummary
          //for everone = outbound
 
-         query = `SELECT * FROM  outbound WHERE getDate=? AND Caller IN(${extensions_string})`
+         query = `SELECT * FROM  outbound WHERE getDate=? AND Caller IN(${extensions})`
          phcdrs = await phdb(query)
          let countph = phcdrs[0].length
          
