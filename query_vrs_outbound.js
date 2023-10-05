@@ -75,7 +75,7 @@ const syncDb = async () => {
 
         //query maindb cdrs;
         let choose_date = choosedate.replaceAll("-","")
-        query = `SELECT * FROM tblSBTCallDetails_AddressBook WHERE  ((CdtCallingParty='6336' AND CdtStartDate=${choose_date};`
+        query = `SELECT * FROM tblSBTCallDetails_AddressBook WHERE  CdtCallingParty='6336' AND CdtStartDate=${choose_date};`
         let maindbtcdrs  = await maindb(query)
         maindbtcdrs = maindbtcdrs.recordset
         let maindbcount = maindbtcdrs.length
